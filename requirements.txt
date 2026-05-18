@@ -1,0 +1,11 @@
+agro
+python-dotenv
+yfinance
+pandas
+packaging
+duckduckgo-search
+fastapi
+uvicorn
+groq
+pydantic
+instructor
