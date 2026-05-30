@@ -1,6 +1,11 @@
 from agno.agent import Agent
 from agno.models.groq import Groq
+from agno.models.fallback import FallbackConfig
 from agno.tools.yfinance import YFinanceTools
+from agno.guardrails import PromptInjectionGuardrail, PIIDetectionGuardrail
+from agno.knowledge.pdf_url import PDFUrlKnowledgeBase
+from agno.vectordb.lancedb import LanceDb, SearchType
+from agno.embedder.openai import OpenAIEmbedder
 
 import os
 from dotenv import load_dotenv
@@ -8,10 +13,20 @@ from dotenv import load_dotenv
 load_dotenv()
 os.environ["GROQ_API_KEY"] = os.getenv("GROQ_API_KEY")
 
+
+
 agent = Agent(
     name= "Divident Safety Analyst",
     role= "Analyze for unsustantiable dividentpayouts, earnings decay, divident traps",
     model = Groq(id="openai/gpt-oss-120b"),
+    fallback_config=FallbackConfig(
+        on_rate_limit=[Groq(id="llama3-70b-8192")],
+        on_error=[Groq(id="llama3-8b-8192")]
+    ),
+    pre_hooks=[
+        PromptInjectionGuardrail(),
+        PIIDetectionGuardrail(mask_pii=True)
+    ],
     tools= [YFinanceTools()],
     instructions=["You are an elite financial analyst.",
                 "Your job is to identify if a stock is a 'Dividend Trap'.",
