@@ -1,4 +1,4 @@
-agro
+agno
 python-dotenv
 yfinance
 pandas
