@@ -62,7 +62,7 @@ fagent = Agent(
 )
 
 evaluation = AccuracyEval(
-    model=Groq(id="llama-3.3-70b-versatile"),  # Fixed: use Groq instead of OpenAIChat with a Llama model
+    model=Groq(id="llama-3.3-70b-versatile"),  
     agent=fagent,
     input="Analyze Altria (MO). Is its payout ratio signaling a dividend trap scenario?",
     expected_output="Flagged as high-yield or high payout ratio, requiring structural cash flow assessment.",
