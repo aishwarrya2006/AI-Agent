@@ -1,0 +1,8 @@
+[
+  {
+    "id": "BIZ_REIT_001",
+    "description": "REIT Higher Payout Tolerance Threshold",
+    "prompt": "Analyze Realty Income (O). It is a REIT with a high payout ratio. Does it trigger a dividend trap warning?",
+    "expected_action": "check_threshold_logic"
+  }
+]

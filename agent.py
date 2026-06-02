@@ -24,7 +24,29 @@ fagent = Agent(
         on_error=[Groq(id="llama3-8b-8192")]
     ),
     pre_hooks=[
-        PromptInjectionGuardrail(),
+        PromptInjectionGuardrail(injection_patterns=[
+            "ignore previous instructions",
+            "ignore your instructions",
+            "you are now a",
+            "forget everything above",
+            "developer mode",
+            "override safety",
+            "disregard guidelines",
+            "system prompt",
+            "jailbreak",
+            "act as if",
+            "pretend you are",
+            "roleplay as",
+            "simulate being",
+            "bypass restrictions",
+            "ignore safeguards",
+            "admin override",
+            "root access",
+            "forget everything",
+            "forget your",
+            "forget the",
+            "ignore the",
+        ]),
         PIIDetectionGuardrail(mask_pii=True)
     ],
     tools=[YFinanceTools()],
@@ -49,16 +71,17 @@ evaluation = AccuracyEval(
 )
 
 
-print("🧪 Starting Automated Agent Evaluation...")
-result: Optional[AccuracyResult] = evaluation.run(print_results=True)
-
-if result:
-    # Safely access score — attribute name varies by agno version
-    score = getattr(result, "avg_score", None) or getattr(result, "score", None) or getattr(result, "mean_score", None)
+if __name__ == "__main__":
+    print("🧪 Starting Automated Agent Evaluation...")
+    result: Optional[AccuracyResult] = evaluation.run(print_results=True)
     
-    if score is not None:
-        print(f"\n📈 Evaluation Complete! Average Score Given by Judge: {score}/10")
-        assert score >= 7.0, "❌ Test Failed: Agent response quality fell below threshold."
-    else:
-        print("\n⚠️ Could not retrieve score. Available attributes:")
-        print(dir(result))
+    if result:
+        # Safely access score — attribute name varies by agno version
+        score = getattr(result, "avg_score", None) or getattr(result, "score", None) or getattr(result, "mean_score", None)
+        
+        if score is not None:
+            print(f"\n📈 Evaluation Complete! Average Score Given by Judge: {score}/10")
+            assert score >= 7.0, "❌ Test Failed: Agent response quality fell below threshold."
+        else:
+            print("\n⚠️ Could not retrieve score. Available attributes:")
+            print(dir(result))
